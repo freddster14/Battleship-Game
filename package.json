@@ -1,25 +1,28 @@
 {
-  "name": "template",
+  "name": "Battleship-Game",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "webpack",
-    "watch": "webpack --watch"
+    "watch": "jest --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Zeronicc/template.git"
+    "url": "git+https://github.com/freddster14/Battleship-Game.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Zeronicc/template/issues"
+    "url": "https://github.com/freddster14/Battleship-Game/issues"
   },
-  "homepage": "https://github.com/Zeronicc/template#readme",
+  "homepage": "https://github.com/freddster14/Battleship-Game#readme",
   "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "babel-jest": "^29.7.0",
     "css-loader": "^7.1.1",
     "css-minimizer-webpack-plugin": "^6.0.0",
     "html-webpack-plugin": "^5.6.0",
