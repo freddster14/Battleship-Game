@@ -24,7 +24,10 @@ export default class GameBoard {
             return index = 'hit'
         }
     }
-    isAllSunk(){
-
+    isAllSunk(ships){
+        for(let i = 0; i < ships.length; i++){
+            if(ships[i].isSunk() === false) return false
+        }
+        return true
     }
 }
