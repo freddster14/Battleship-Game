@@ -4,7 +4,7 @@ export default class GameBoard {
     }
     placeShip(ship, area){
         let index;
-        for(let n = 0; n < ship.length - 1; n++){
+        for(let n = 0; n < ship.length; n++){
             if(this.grid[area[n][0]][area[n][1]] !== false) return 'invalid placement';
             index = this.grid[area[n][0]][area[n][1]] = ship
         }
@@ -13,18 +13,16 @@ export default class GameBoard {
     receiveAttack(x, y){
         const ship = this.grid[x][y];
         const hitOrMiss = this.attackLogic(ship);
-        return hitOrMiss
+        return this.grid[x][y] = hitOrMiss;
     }
-    attackLogic(ship){
-        if(ship === 'hit' || ship === 'miss') return 'same attack spot'
-
-        if(ship === false) {
-            ship = 'miss';
-        } else if(ship !== false) {
-            ship.hit();
-            ship = 'hit'
+    attackLogic(index){
+        if(index === 'hit' || index === 'miss') return 'same attack spot'
+        if(index === false) {
+            return index = 'miss';
+        } else if(index !== false) {
+            index.hit();
+            return index = 'hit'
         }
-        return ship
     }
     isAllSunk(){
 

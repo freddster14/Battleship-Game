@@ -13,7 +13,8 @@ test('check if ship is in correct coordinates', () => {
 });
 
 test('see if receiveAttack hit or miss', () => {
-    expect(game.receiveAttack(3,3)).toBe('hit'); //false but hit
-    expect(game.receiveAttack(2,6)).toBe('miss')
-    expect(game.receiveAttack(4,3)).toBe('hit'); //true sunk
+    expect(game.receiveAttack(3,3)).toBe('hit');
+    expect(game.receiveAttack(5,3)).toBe('miss');
+    expect(game.receiveAttack(3,3)).toBe('same attack spot');
+    expect(game.receiveAttack(4,3)).toBe('hit'); //sunk
 })
