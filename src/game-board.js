@@ -22,7 +22,7 @@ export default class GameBoard {
         } else if(index !== false) {
             index.hit();
             index.sunk = index.isSunk();
-            if(index.sunk) this.isAllSunk();
+            // if(index.sunk) this.isAllSunk();
             return index = 'hit'
         }
     }
