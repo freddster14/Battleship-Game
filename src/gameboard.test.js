@@ -1,10 +1,16 @@
 import Gameboard from "./gameboard";
 import Ship from "./ship"
 
+const game = new Gameboard;
+const destroyer = new Ship(2)
+
 test('check if ship is in correct coordinates', () => {
-    const game = new Gameboard;
-    const destroyer = new Ship(4)
-    game.placeShip(destroyer, [[3,3], [4,3]]);
-    expect(game.receiveAttack([3,3])).toBe(true);
-    expect(game.receiveAttack([5,3])).toBe(false);
+    expect(game.placeShip(destroyer, [3,3], [4,3])).toBe(destroyer);
+   
 });
+
+test('see if receiveAttack hit or miss', () => {
+    expect(game.receiveAttack(3,3)).toBe(destroyer.sunk); //false
+    expect(game.receiveAttack(2,6)).toBe('missed attack')
+    expect(game.receiveAttack(4,3)).toBe(destroyer.sunk); //true
+})
