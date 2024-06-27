@@ -1,4 +1,4 @@
-export default class Gameboard {
+export default class GameBoard {
     constructor(){
         this.grid = new Array(8).fill(null).map(() => new Array(8).fill(false));
     }
@@ -9,10 +9,20 @@ export default class Gameboard {
     }
     receiveAttack(x, y){
         const ship = this.grid[x][y];
-        if(ship !== false){
+        const hitOrMiss = this.attackLogic(ship);
+        return hitOrMiss
+    }
+    attackLogic(ship){
+        if(ship === false) {
+            ship = 'miss';
+            return ship
+        } else if(ship !== false) {
             ship.hit();
-            return ship.isSunk()
+            ship = 'hit'
         }
-        return 'missed attack'
+        return ship
+    }
+    isAllSunk(){
+
     }
 }
