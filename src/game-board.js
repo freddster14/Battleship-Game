@@ -21,12 +21,14 @@ export default class GameBoard {
             return index = 'miss';
         } else if(index !== false) {
             index.hit();
+            index.sunk = index.isSunk();
+            if(index.sunk) this.isAllSunk();
             return index = 'hit'
         }
     }
     isAllSunk(ships){
         for(let i = 0; i < ships.length; i++){
-            if(ships[i].isSunk() === false) return false
+            if(ships[i].sunk === false) return false
         }
         return true
     }
