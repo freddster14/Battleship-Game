@@ -1,4 +1,4 @@
-# Project Name
+# Battle Ship
 Live Preview: [Click Here]()
 ## Technologies Used
 
@@ -8,3 +8,4 @@ Live Preview: [Click Here]()
 * Webpack
 
 ## Description
+A classic game of Battle Ship. App was created with the guidance of the Odin Project. TDD was driven by Jest and Webpack.
