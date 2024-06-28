@@ -4,20 +4,23 @@
     <meta charset="utf-8">
     <title>Battle-Ship</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script defer src="main.js"></script>
-    <link rel="stylesheet" href="style.css">
-  </head>
+    <link rel="stylesheet" href="/src/style.css">
+  <script defer src="index.js"></script><link href="main.css" rel="stylesheet"></head>
   <body>
     <div class="main-container">
       <h1>Battle Ship</h1>
-      <button class="start" onclick="startGame()">Start</button>
-      <div class="player1-board">
+      <button class="start">Start</button>
 
+      <div id="player1">
+        <h2>Player 1</h2>
+        <div class="board">
+        </div>
       </div>
-      <div class="player2-board">
-
+      <div id="player2">
+        <h2>Player 2</h2>
+        <div class="board">
+        </div>
       </div>
     </div>
-
   </body>
 </html>
