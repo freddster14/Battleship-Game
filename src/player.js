@@ -1,7 +1,15 @@
 import GameBoard from "./game-board"
 
-export default class Player {
+class Player {
     constructor() {
-        this.gameBoard = new GameBoard
+        this.gameBoard = new GameBoard;
     }
 }
+
+class Computer {
+    constructor(){
+        this.gameBoard = new GameBoard;
+    }
+}
+
+export {Player, Computer}

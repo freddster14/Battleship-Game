@@ -1,4 +1,4 @@
-import Player from "./player";
+import {Player, Computer} from "./player";
 import Ship from "./ship";
 
 const player1 = new Player;
