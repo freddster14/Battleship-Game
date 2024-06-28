@@ -34,24 +34,33 @@ function createBoardGrid(grid, t) {
                 let board = square.parentElement.classList.contains('1')
                 let x = Number(square.id.at(0));
                 let y = Number(square.id.at(2));
-                squareEvent(x, y, board)
+                squareEvent(x, y, board);
+                let result = styleSquare(square, turn.gameBoard.grid[x][y])
+                console.log(result)
                 console.log(`Square Status: ${turn.gameBoard.grid[x][y]}`)
             });
             gameBoards[t].appendChild(square);
             gameBoards[t].style.gridTemplateColumns = `repeat(64, 1fr)`;
             gameBoards[t].style.gridTemplateRows = `repeat(64, 1fr)`;
         }
-       
     }
 }
 
 function squareEvent(x, y, board){
     if(turn === player1 && board === false) {
         turn = player2;
-        turn.gameBoard.receiveAttack(x, y);
+        return turn.gameBoard.receiveAttack(x, y);
     } else if(board === true && turn === player2){
         turn = player1
-        turn.gameBoard.receiveAttack(x, y);
+        return turn.gameBoard.receiveAttack(x, y);
+    }
+}
+
+function styleSquare(square, status) {
+    if(status === 'hit') {
+        square.style.backgroundColor = "red"
+    } else if(status === 'miss') {
+        square.style.backgroundColor = "grey"
     }
 }
 
