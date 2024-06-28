@@ -8,7 +8,7 @@ export default class GameBoard {
             if(this.grid[area[n][0]][area[n][1]] !== false) return 'invalid placement';
             index = this.grid[area[n][0]][area[n][1]] = ship
         }
-        return index
+        return area
     }
     receiveAttack(x, y){
         const ship = this.grid[x][y];
@@ -16,7 +16,7 @@ export default class GameBoard {
         return this.grid[x][y] = hitOrMiss;
     }
     attackLogic(index){
-        if(index === 'hit' || index === 'miss') return 'same attack spot'
+        if(index === 'hit' || index === 'miss') return index
         if(index === false) {
             return index = 'miss';
         } else if(index !== false) {
