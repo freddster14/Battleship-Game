@@ -1,5 +1,4 @@
 import {Player, Computer} from "./player";
-import GameBoard from "./game-board";
 import Ship from "./ship";
 import styles from './style.css'
 
@@ -56,19 +55,27 @@ function squareEvent(x, y, board){
 
 function changeTurn(result) {
     if(result === 'same spot') return
-    if(result === 'hit') {
-        return
-    } else if(result === 'miss') {
+    if(result === 'miss') {
         (opponent === player1) ? opponent = player2 : opponent = player1;
     }
 }
 
 function styleUI(square, status) {
+    const turnDisplay = document.querySelector('.player-turn');
+    const infoStatus = document.querySelector('.info');
     if(status === 'same spot') return
     if(status === 'hit') {
-        square.style.backgroundColor = "red"
+        square.style.backgroundColor = "red";
+        infoStatus.textContent = "You hit a ship! Attack again!"
     } else if(status === 'miss') {
         square.style.backgroundColor = "grey"
+        infoStatus.textContent = "Oh no, a miss!"
+        setTimeout(() => {
+            (opponent === player1)
+            ? turnDisplay.textContent = "Player 2"
+            : turnDisplay.textContent = "Player 1";
+            infoStatus.textContent = "Attack!"
+        }, 900)
     }
 }
 
