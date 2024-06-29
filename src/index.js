@@ -55,7 +55,9 @@ function squareEvent(x, y, board){
 
 function changeTurn(result) {
     if(result === 'same spot') return
-    if(result === 'miss') {
+    if(result === 'hit') {
+        return
+    } else if(result === 'miss') {
         (opponent === player1) ? opponent = player2 : opponent = player1;
     }
 }

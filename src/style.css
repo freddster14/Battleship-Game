@@ -10,6 +10,15 @@
     align-items: center;
 }
 
+.board-container {
+    display: flex;
+    width: 90%;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
 .board {
     display: flex;
     width: 420px;
@@ -26,4 +35,10 @@
 
 .ship {
     background-color: rgba(0, 17, 255, 0.637);
+}
+
+.info {
+    width: 150px;
+    height: 55px;
+    text-align: center;
 }
