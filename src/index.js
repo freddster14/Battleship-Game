@@ -9,7 +9,7 @@ startBtn.addEventListener('click', () => {});
 
 const player1 = new Player;
 const player2 = new Player;
-let turn = player1;
+let opponent = player2;
 
 player1.gameBoard.placeShip(new Ship(3), [[4,3], [4,4],[4,5]])
 player1.gameBoard.placeShip(new Ship(2), [[6,1], [5,1]])
@@ -34,10 +34,10 @@ function createBoardGrid(grid, t) {
                 let board = square.parentElement.classList.contains('1')
                 let x = Number(square.id.at(0));
                 let y = Number(square.id.at(2));
-                squareEvent(x, y, board);
-                let result = styleSquare(square, turn.gameBoard.grid[x][y])
-                console.log(result)
-                console.log(`Square Status: ${turn.gameBoard.grid[x][y]}`)
+                let result = squareEvent(x, y, board);
+                styleUI(square, result);
+                changeTurn(result);
+                console.log(result);
             });
             gameBoards[t].appendChild(square);
             gameBoards[t].style.gridTemplateColumns = `repeat(64, 1fr)`;
@@ -47,16 +47,24 @@ function createBoardGrid(grid, t) {
 }
 
 function squareEvent(x, y, board){
-    if(turn === player1 && board === false) {
-        turn = player2;
-        return turn.gameBoard.receiveAttack(x, y);
-    } else if(board === true && turn === player2){
-        turn = player1
-        return turn.gameBoard.receiveAttack(x, y);
+    if(opponent === player1 && board === true) {
+        return opponent.gameBoard.receiveAttack(x, y);
+    } else if(board === false && opponent === player2){
+        return opponent.gameBoard.receiveAttack(x, y);
     }
 }
 
-function styleSquare(square, status) {
+function changeTurn(result) {
+    if(result === 'same spot') return
+    if(result === 'hit') {
+        return
+    } else if(result === 'miss') {
+        (opponent === player1) ? opponent = player2 : opponent = player1;
+    }
+}
+
+function styleUI(square, status) {
+    if(status === 'same spot') return
     if(status === 'hit') {
         square.style.backgroundColor = "red"
     } else if(status === 'miss') {
