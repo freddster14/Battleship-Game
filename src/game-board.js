@@ -16,7 +16,7 @@ export default class GameBoard {
         return this.grid[x][y] = hitOrMiss;
     }
     attackLogic(index){
-        if(index === 'hit' || index === 'miss') return index
+        if(index === 'hit' || index === 'miss' || index === 'same spot') return 'same spot'
         if(index === false) {
             return index = 'miss';
         } else if(index !== false) {
