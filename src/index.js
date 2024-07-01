@@ -11,16 +11,24 @@ const player2 = new Computer;
 
 let opponent = player2;
 
-player1.gameBoard.placeShip(new Ship(3), [[4,3], [4,4],[4,5]])
-player1.gameBoard.placeShip(new Ship(2), [[6,1], [5,1]])
-player1.gameBoard.placeShip(new Ship(4), [[4,7], [3,7], [2,7], [1,7]])
-player2.gameBoard.placeShip(new Ship(2), [[0,3], [1,3]])
-player2.gameBoard.placeShip(new Ship(4), [[7,3], [6,3],[5,3], [4,3]])
-player2.gameBoard.placeShip(new Ship(3), [[5,5], [4,5],[3,5]])  
+player1.gameBoard.placeShip(new Ship('destroyer',3), [[4,3], [4,4],[4,5]])
+player1.gameBoard.placeShip(new Ship('patrol-boat',2), [[6,1], [5,1]])
+player1.gameBoard.placeShip(new Ship('battleship',4), [[4,7], [3,7], [2,7], [1,7]])
+// player2.gameBoard.placeShip(new Ship(2), [[0,3], [1,3]])
+// player2.gameBoard.placeShip(new Ship(4), [[7,3], [6,3],[5,3], [4,3]])
+// player2.gameBoard.placeShip(new Ship(3), [[5,5], [4,5],[3,5]])  
 
 startBtn.addEventListener('click', () => {
     createBoardGrid(player1.gameBoard.grid, 0);
-    createBoardGrid(player2.gameBoard.grid, 1);
+    if(player2.constructor.name === "Computer") {
+        player2.gameBoard.placeShip(new Ship('battleship', 4), randomPlacement(4));
+        player2.gameBoard.placeShip(new Ship('destroyer',3), randomPlacement(3));
+        player2.gameBoard.placeShip(new Ship('submarine',3), randomPlacement(3));
+        player2.gameBoard.placeShip(new Ship('patrol-boat',2), randomPlacement(2));
+        createBoardGrid(player2.gameBoard.grid, 1)
+    }else {    
+        createBoardGrid(player2.gameBoard.grid, 1);
+    }
     startBtn.style.display = 'none'
 });
 
@@ -32,7 +40,10 @@ function createBoardGrid(grid, t) {
             let square = document.createElement('div');
             square.className = "squares";
             //Checks for Ship
-            if(grid[i][n] !== false) square.classList.add('ship');
+            if(grid[i][n] !== false) {
+                square.classList.add(`${grid[i][n].name}`)
+                square.classList.add('hidden')
+            };
             //Set coordinates
             square.id = `${i},${n}`
             square.addEventListener('click', (e) => {
@@ -68,6 +79,39 @@ function changeTurn(result) {
     }
 }
 
+
+function randomPlacement(shipLength) {
+    let coordinates = randomCoordinates()
+    let x = coordinates[0][0];
+    let y = coordinates[0][1];
+    let vertical = Math.round(Math.random() * 1);
+    for(let i = 0; i < shipLength - 1; i++){
+        if(vertical){
+            coordinates.push([x += 1, y])
+        } else {
+            coordinates.push([x, y += 1])
+        }
+        if(x === 8 || y === 8 || player2.gameBoard.grid[x][y] !== false){
+            i = -1;
+            coordinates = randomCoordinates();
+            x = coordinates[0][0];
+            y = coordinates[0][1];
+            continue;
+        }
+    }
+    return coordinates 
+}
+
+function randomCoordinates() {
+    let x = Math.floor(Math.random() * 8);
+    let y = Math.floor(Math.random() * 8);
+    while(player2.gameBoard.grid[x][y] !== false) {
+        x = Math.floor(Math.random() * 8);
+        y = Math.floor(Math.random() * 8);
+    }
+    return [[x,y]]
+}
+
 function computerAttack(){
     if(opponent === player1 && player2.constructor.name === "Computer"){
         setTimeout(() => {
@@ -88,6 +132,7 @@ function styleUI(square, status) {
     if(status === 'same spot') return
     if(status === 'hit') {
         square.classList.add('hit');
+        square.classList.remove('hidden')
         infoStatus.textContent = "You hit a ship! Attack again!"
     } else if(status === 'miss') {
         square.classList.add('miss')
