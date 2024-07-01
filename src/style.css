@@ -36,6 +36,12 @@
 .ship {
     background-color: rgba(0, 17, 255, 0.637);
 }
+.hit{
+    background-color: red;
+}
+.miss{
+    background-color: gray;
+}
 
 .info {
     width: 150px;
