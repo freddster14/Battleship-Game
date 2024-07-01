@@ -4,10 +4,11 @@ import styles from './style.css'
 
 const startBtn = document.querySelector('.start');
 const gameBoards = document.getElementsByClassName('board');
-startBtn.addEventListener('click', () => {});
+
 
 const player1 = new Player;
-const player2 = new Player;
+const player2 = new Computer;
+
 let opponent = player2;
 
 player1.gameBoard.placeShip(new Ship(3), [[4,3], [4,4],[4,5]])
@@ -17,8 +18,13 @@ player2.gameBoard.placeShip(new Ship(2), [[0,3], [1,3]])
 player2.gameBoard.placeShip(new Ship(4), [[7,3], [6,3],[5,3], [4,3]])
 player2.gameBoard.placeShip(new Ship(3), [[5,5], [4,5],[3,5]])  
 
-createBoardGrid(player1.gameBoard.grid, 0);
-createBoardGrid(player2.gameBoard.grid, 1)
+startBtn.addEventListener('click', () => {
+    createBoardGrid(player1.gameBoard.grid, 0);
+    createBoardGrid(player2.gameBoard.grid, 1);
+    startBtn.style.display = 'none'
+});
+
+
 
 function createBoardGrid(grid, t) {
     for(let i = 0; i < grid.length; i++){
@@ -36,7 +42,7 @@ function createBoardGrid(grid, t) {
                 let result = squareEvent(x, y, board);
                 styleUI(square, result);
                 changeTurn(result);
-                console.log(result);
+                computerAttack();
             });
             gameBoards[t].appendChild(square);
             gameBoards[t].style.gridTemplateColumns = `repeat(64, 1fr)`;
@@ -62,22 +68,36 @@ function changeTurn(result) {
     }
 }
 
+function computerAttack(){
+    if(opponent === player1 && player2.constructor.name === "Computer"){
+        setTimeout(() => {
+            let randomIndex = Math.floor(Math.random() * 64);
+            let square = document.getElementsByClassName('board')[0].children[randomIndex];
+            while(square.classList.contains("hit") || square.classList.contains("miss")) {
+                randomIndex = Math.floor(Math.random() * 64);
+                square = document.getElementsByClassName('board')[0].children[randomIndex];
+            }
+            square.click()
+        }, 1750)
+    }
+}
+
 function styleUI(square, status) {
     const turnDisplay = document.querySelector('.player-turn');
     const infoStatus = document.querySelector('.info');
     if(status === 'same spot') return
     if(status === 'hit') {
-        square.style.backgroundColor = "red";
+        square.classList.add('hit');
         infoStatus.textContent = "You hit a ship! Attack again!"
     } else if(status === 'miss') {
-        square.style.backgroundColor = "grey"
+        square.classList.add('miss')
         infoStatus.textContent = "Oh no, a miss!"
         setTimeout(() => {
             (opponent === player1)
             ? turnDisplay.textContent = "Player 2"
             : turnDisplay.textContent = "Player 1";
             infoStatus.textContent = "Attack!"
-        }, 900)
+        }, 1000)
     }
 }
 
