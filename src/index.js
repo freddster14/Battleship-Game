@@ -57,7 +57,6 @@ function createBoardGrid(grid, t) {
                 styleUI(square, result);
                 changeTurn(result);
                 computerAttack();
-                allSunk(grid)
             });
             
         }
@@ -75,7 +74,7 @@ function squareEvent(x, y, board){
 function changeTurn(result) {
     if(result === 'same spot') return
     if(result === 'hit') {
-        return
+        return gameStatus()
     } else if(result === 'miss') {
         (opponent === player1) ? opponent = player2 : opponent = player1;
     }
@@ -147,8 +146,15 @@ function styleUI(square, status) {
         }, 1000)
     }
 }
-function allSunk(grid){
-    for(let n in grid) {
+function gameStatus(){
+    let over = null;
+    if(opponent === player2){
+        over = player2.gameBoard.isAllSunk()
+    } else {
+        over = player1.gameBoard.isAllSunk()
+    }
+    if(over && opponent === player2) {
+        let board = document.querySelector('.2');
         
     }
 }

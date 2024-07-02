@@ -22,13 +22,16 @@ export default class GameBoard {
         } else if(index !== false) {
             index.hit();
             index.sunk = index.isSunk();
-            // if(index.sunk) this.isAllSunk();
             return index = 'hit'
         }
     }
-    isAllSunk(ships){
-        for(let i = 0; i < ships.length; i++){
-            if(ships[i].sunk === false) return false
+    isAllSunk(){
+        for(let i = 0; i < this.grid.length; i++){
+            for(let n in this.grid[i]){
+                if(this.grid[i][n].constructor.name === 'Ship') {
+                    return false
+                }
+            }
         }
         return true
     }
