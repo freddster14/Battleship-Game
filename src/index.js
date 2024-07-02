@@ -8,6 +8,7 @@ const gameBoards = document.getElementsByClassName('board');
 
 const player1 = new Player;
 const player2 = new Computer;
+const gameMode = 'computer';
 
 let opponent = player2;
 
@@ -20,13 +21,13 @@ player1.gameBoard.placeShip(new Ship('battleship',4), [[4,7], [3,7], [2,7], [1,7
 
 startBtn.addEventListener('click', () => {
     createBoardGrid(player1.gameBoard.grid, 0);
-    if(player2.constructor.name === "Computer") {
+    if(gameMode === 'computer') {
         player2.gameBoard.placeShip(new Ship('battleship', 4), randomPlacement(4));
         player2.gameBoard.placeShip(new Ship('destroyer',3), randomPlacement(3));
         player2.gameBoard.placeShip(new Ship('submarine',3), randomPlacement(3));
         player2.gameBoard.placeShip(new Ship('patrol-boat',2), randomPlacement(2));
         createBoardGrid(player2.gameBoard.grid, 1)
-    }else {    
+    }else if (gameMode === 'vs'){    
         createBoardGrid(player2.gameBoard.grid, 1);
     }
     startBtn.style.display = 'none'
@@ -38,26 +39,27 @@ function createBoardGrid(grid, t) {
     for(let i = 0; i < grid.length; i++){
         for(let n in grid[i]){
             let square = document.createElement('div');
+            gameBoards[t].appendChild(square);
+            gameBoards[t].style.gridTemplateColumns = `repeat(64, 1fr)`;
+            gameBoards[t].style.gridTemplateRows = `repeat(64, 1fr)`;
+            let board = square.parentElement.classList.contains('1');
+
             square.className = "squares";
             //Checks for Ship
-            if(grid[i][n] !== false) {
+            if(grid[i][n] !== false && board === true && gameMode === 'computer') {
                 square.classList.add(`${grid[i][n].name}`)
-                square.classList.add('hidden')
             };
-            //Set coordinates
             square.id = `${i},${n}`
             square.addEventListener('click', (e) => {
-                let board = square.parentElement.classList.contains('1')
                 let x = Number(square.id.at(0));
                 let y = Number(square.id.at(2));
                 let result = squareEvent(x, y, board);
                 styleUI(square, result);
                 changeTurn(result);
                 computerAttack();
+                allSunk(grid)
             });
-            gameBoards[t].appendChild(square);
-            gameBoards[t].style.gridTemplateColumns = `repeat(64, 1fr)`;
-            gameBoards[t].style.gridTemplateRows = `repeat(64, 1fr)`;
+            
         }
     }
 }
@@ -145,5 +147,8 @@ function styleUI(square, status) {
         }, 1000)
     }
 }
-
-
+function allSunk(grid){
+    for(let n in grid) {
+        
+    }
+}
