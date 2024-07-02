@@ -46,8 +46,9 @@ function createBoardGrid(grid, t) {
 
             square.className = "squares";
             //Checks for Ship
-            if(grid[i][n] !== false && board === true && gameMode === 'computer') {
+            if(grid[i][n] !== false) {
                 square.classList.add(`${grid[i][n].name}`)
+                if(gameMode === 'computer' && board === false) square.classList.add('hidden');
             };
             square.id = `${i},${n}`
             square.addEventListener('click', (e) => {
@@ -155,6 +156,7 @@ function gameStatus(){
     }
     if(over && opponent === player2) {
         let board = document.querySelector('.2');
-        
+        board.id = 'game-over';
+
     }
 }
