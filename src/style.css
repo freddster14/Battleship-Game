@@ -1,13 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Kode+Mono:wght@400..700&family=Tiny5&display=swap');
+
 * {
     margin: 0px;
     padding: 0px;
+    font-family: "Kode Mono","Chakra Petch", sans-serif;
 }
 
 .main-container {
+    padding-top: 2%;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+#title {
+    font-size: 50px;
+}
+button {
+    font-size: 20px;
+    width: 75px;
+    height: 30px;
+    border-radius: 10px;
+}
+
+.game-mode {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 7px;
+    position: fixed;
+    z-index: 2;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid gray;
+    border-radius: 20px;
+    background-color: white;
+    padding: 30px;
+    height: 75px;
+    width: 175px;
+   
+}
+.overlay {
+    position: fixed;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.295);
+    top: 0%;
+    width: 100%;
+    height: 100%;
 }
 
 .board-container {

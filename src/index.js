@@ -2,15 +2,19 @@ import {Player, Computer} from "./player";
 import Ship from "./ship";
 import styles from './style.css'
 
-const startBtn = document.querySelector('.start');
+const cpuBtn = document.querySelector('.computer');
+const vsBtn = document.querySelector('.vs');
+const overlay = document.querySelector('.overlay');
+const gameModeDisplay = document.querySelector('.game-mode');
+const gameContainer = document.querySelector('.board-container')
 const gameBoards = document.getElementsByClassName('board');
 const turnDisplay = document.querySelector('.player-turn');
 const infoStatus = document.querySelector('.info');
 
 const player1 = new Player;
 const player2 = new Computer;
-const gameMode = 'computer';
 
+let gameMode = 'null';
 let opponent = player2;
 
 player1.gameBoard.placeShip(new Ship('destroyer',3), [[4,3], [4,4],[4,5]])
@@ -20,7 +24,23 @@ player1.gameBoard.placeShip(new Ship('battleship',4), [[4,7], [3,7], [2,7], [1,7
 // player2.gameBoard.placeShip(new Ship(4), [[7,3], [6,3],[5,3], [4,3]])
 // player2.gameBoard.placeShip(new Ship(3), [[5,5], [4,5],[3,5]])  
 
-startBtn.addEventListener('click', () => {
+
+
+cpuBtn.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    gameModeDisplay.style.display = 'none';
+    gameMode = 'computer'
+    startGame()
+});
+
+vsBtn.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    gameModeDisplay.style.display = 'none';
+    gameMode = 'vs'
+    startGame()
+});
+
+function startGame() {
     createBoardGrid(player1.gameBoard.grid, 0);
     if(gameMode === 'computer') {
         player2.gameBoard.placeShip(new Ship('battleship', 4), randomPlacement(4));
@@ -31,8 +51,10 @@ startBtn.addEventListener('click', () => {
     }else if (gameMode === 'vs'){    
         createBoardGrid(player2.gameBoard.grid, 1);
     }
-    startBtn.style.display = 'none'
-});
+}
+
+
+
 
 
 
