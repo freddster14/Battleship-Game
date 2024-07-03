@@ -4,7 +4,8 @@ import styles from './style.css'
 
 const startBtn = document.querySelector('.start');
 const gameBoards = document.getElementsByClassName('board');
-
+const turnDisplay = document.querySelector('.player-turn');
+const infoStatus = document.querySelector('.info');
 
 const player1 = new Player;
 const player2 = new Computer;
@@ -42,19 +43,18 @@ function createBoardGrid(grid, t) {
             gameBoards[t].appendChild(square);
             gameBoards[t].style.gridTemplateColumns = `repeat(64, 1fr)`;
             gameBoards[t].style.gridTemplateRows = `repeat(64, 1fr)`;
-            let board = square.parentElement.classList.contains('1');
-
+            let boardBoolean = square.parentElement.classList.contains('1');
             square.className = "squares";
             //Checks for Ship
             if(grid[i][n] !== false) {
                 square.classList.add(`${grid[i][n].name}`)
-                if(gameMode === 'computer' && board === false) square.classList.add('hidden');
+                if(gameMode === 'computer' && boardBoolean === false) square.classList.add('hidden');
             };
             square.id = `${i},${n}`
             square.addEventListener('click', (e) => {
                 let x = Number(square.id.at(0));
                 let y = Number(square.id.at(2));
-                let result = squareEvent(x, y, board);
+                let result = squareEvent(x, y, boardBoolean);
                 styleUI(square, result);
                 changeTurn(result);
                 computerAttack();
@@ -80,7 +80,6 @@ function changeTurn(result) {
         (opponent === player1) ? opponent = player2 : opponent = player1;
     }
 }
-
 
 function randomPlacement(shipLength) {
     let coordinates = randomCoordinates()
@@ -129,8 +128,6 @@ function computerAttack(){
 }
 
 function styleUI(square, status) {
-    const turnDisplay = document.querySelector('.player-turn');
-    const infoStatus = document.querySelector('.info');
     if(status === 'same spot') return
     if(status === 'hit') {
         square.classList.add('hit');
@@ -141,22 +138,59 @@ function styleUI(square, status) {
         infoStatus.textContent = "Oh no, a miss!"
         setTimeout(() => {
             (opponent === player1)
-            ? turnDisplay.textContent = "Player 2"
-            : turnDisplay.textContent = "Player 1";
+            ? turnDisplay.textContent = "Player 2:"
+            : turnDisplay.textContent = "Player 1:";
             infoStatus.textContent = "Attack!"
         }, 1000)
     }
 }
 function gameStatus(){
     let over = null;
+    //Checks for game over
     if(opponent === player2){
         over = player2.gameBoard.isAllSunk()
     } else {
         over = player1.gameBoard.isAllSunk()
     }
+    //Style board and updates game display
     if(over && opponent === player2) {
-        let board = document.querySelector('.2');
-        board.id = 'game-over';
+        destroyBoard(gameBoards[1])
+        gameOverDisplay(player1)
+    } else if(opponent === player1 && over) {
+        destroyBoard(gameBoards[0])
+        gameOverDisplay(player2)
+    }
+}
 
+function destroyBoard(board){
+    let i = 0;
+    let xLeft = 0;
+    let xRight = 7;
+    let interval = setInterval(() => {
+        board.children[i].classList.remove('hit');
+        board.children[i].classList.remove('miss');
+        if(i === xLeft){
+            xLeft += 9;
+            return board.children[i].style.backgroundColor = 'red'
+        } else if(i === xRight) {
+            xRight += 7;
+            return board.children[i].style.backgroundColor = 'red'
+        }
+        board.children[i].id = 'game-over';
+        i++;
+        if(i === 64) clearInterval(interval)
+    }, 20);
+}
+
+function gameOverDisplay(winner) {
+    if(winner.constructor.name === 'Computer'){
+        turnDisplay.textContent = "Computer:"
+        infoStatus.textContent = "Defeated all Player 1 ships!"
+    } else if(opponent === player2) {
+        turnDisplay.textContent = "Player 1:"
+        infoStatus.textContent = "Defeated all Player 2 ships!"
+    } else {
+        turnDisplay.textContent = "Player 2:"
+        infoStatus.textContent = "Defeated all Player 1 ships!"
     }
 }
