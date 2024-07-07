@@ -2,8 +2,6 @@ import {Player, Computer} from "./player";
 import Ship from "./ship";
 import styles from './style.css'
 
-const cpuBtn = document.querySelector('.computer');
-const vsBtn = document.querySelector('.vs');
 const overlay = document.querySelector('.overlay');
 const gameModeDisplay = document.querySelector('.game-mode');
 const gameContainer = document.querySelector('.board-container')
@@ -26,39 +24,132 @@ player1.gameBoard.placeShip(new Ship('battleship',4), [[4,7], [3,7], [2,7], [1,7
 
 
 
-cpuBtn.addEventListener('click', () => {
+document.querySelector('.computer').addEventListener('click', () => {
+    player2 = new Computer
     overlay.style.display = 'none';
     gameModeDisplay.style.display = 'none';
     gameMode = 'computer'
-    startGame()
+    createPlayerGrid(player1);
+    createCpuGrid(player2)
 });
 
-vsBtn.addEventListener('click', () => {
+document.querySelector('.vs').addEventListener('click', () => {
+    player2 = new Player
     overlay.style.display = 'none';
     gameModeDisplay.style.display = 'none';
     gameMode = 'vs'
-    startGame()
 });
 
-function startGame() {
-    createBoardGrid(player1.gameBoard.grid, 0);
-    if(gameMode === 'computer') {
-        player2.gameBoard.placeShip(new Ship('battleship', 4), randomPlacement(4));
-        player2.gameBoard.placeShip(new Ship('destroyer',3), randomPlacement(3));
-        player2.gameBoard.placeShip(new Ship('submarine',3), randomPlacement(3));
-        player2.gameBoard.placeShip(new Ship('patrol-boat',2), randomPlacement(2));
-        createBoardGrid(player2.gameBoard.grid, 1)
-    }else if (gameMode === 'vs'){    
-        createBoardGrid(player2.gameBoard.grid, 1);
+
+
+
+
+function createPlayerGrid(player) {
+    let selectedShip = []
+    let rotate = false
+    let usedShips = []
+    for(let i = 0; i < player.gameBoard.grid.length; i++){
+        for(let n in player.gameBoard.grid[i]){
+            let square = document.createElement('div');
+            gameBoards[0].appendChild(square);
+            gameBoards[0].style.gridTemplateColumns = `repeat(64, 1fr)`;
+            gameBoards[0].style.gridTemplateRows = `repeat(64, 1fr)`;
+            square.className = "squares";
+            square.id = `${i},${n}`;
+            square.addEventListener('click', () => {
+                let length = selectShip[1]
+            });
+        }
+    }
+    gameBoards[0].addEventListener('click', (e) => {
+        if(selectedShip === null) return;
+        let current = e.target;
+        //Removes same ship to re insert
+        if(usedShips.includes(selectedShip[0])) {
+            usedShips = usedShips.filter((ship) => ship !== selectedShip[0]);
+            removeShipDOM(selectedShip[0])
+        }
+        if(rotate & !((+current.id[0] + selectedShip[1]) > 8)) {
+            //Goes through board's div vertically
+            for(let i = 0; i < selectedShip[1]; i++){
+                if(current.classList.length > 1) return removeShipDOM(selectedShip[0])
+                current.classList.add(selectedShip[0]);
+                if(i === selectedShip[1] - 1) break;
+                for(let n = 0; n <= 7; n++){
+                    current = current.nextElementSibling;
+                }
+            }
+            usedShips.push(selectedShip[0])
+         } else if(!rotate & !((+current.id[2] + selectedShip[1]) > 8)){
+            for(let i = 0; i < selectedShip[1]; i++){
+                if(current.classList.length > 1) return removeShipDOM(selectedShip[0])
+                current.classList.add(selectedShip[0]);
+                if(i === selectedShip[1] - 1) break;
+                current = current.nextElementSibling;
+            }
+            usedShips.push(selectedShip[0])
+         }
+    })
+    document.querySelectorAll('.ships > button').forEach((button) => {
+        button.addEventListener('click', (e) => {
+            selectedShip = selectShip(e.target.classList.value)
+        })
+    });
+    document.querySelector('.rotate').addEventListener('click', () => {
+        if(rotate === false) {
+            rotate = true;
+        } else {
+            rotate = false
+        }
+    });
+    document.querySelector('.confirm').addEventListener('click', () => {
+        let storage = {
+            battleship: [],
+            destroyer: [],
+            submarine: [],
+            patrolBoat: []
+        }
+        for(let i = 0; i< 64; i++) {
+            let div = gameBoards[0].children[i]
+            if(div.classList.contains('battleship')) {
+                storage.battleship.push(div.id)
+            } else if(div.classList.contains('destroyer')) {
+                storage.destroyer.push(div.id)
+            } else if(div.classList.contains('submarine')) {
+                storage.submarine.push(div.id)
+            } else if(div.classList.contains('patrol-boat')) {
+                storage.patrolBoat.push(div.id)
+            }
+        }
+
+    });
+} 
+
+function removeShipDOM(ship) {
+    if(ship === undefined) return
+    for(let n in gameBoards[0].children){
+        if(gameBoards[0].children[+n].classList.contains(ship)){
+            gameBoards[0].children[+n].classList.remove(ship)
+        };
+        if(+n === 63) return;
     }
 }
 
-
-
-
+function selectShip(shipName) {
+    let length = 0;
+    if(shipName === 'battleship') {
+        length = 4
+    } else if(shipName === 'patrol-boat') {
+        length = 2
+    } else {
+        length = 3
+    }
+    return [shipName, length]
+}
 
 
 function createBoardGrid(grid, t) {
+    gameContainer.style.display = 'flex';
     for(let i = 0; i < grid.length; i++){
         for(let n in grid[i]){
             let square = document.createElement('div');
