@@ -22,6 +22,7 @@ document.querySelector('.computer').addEventListener('click', () => {
     player2 = new Computer;
     overlay.style.display = 'none';
     gameModeDisplay.style.display = 'none';
+    document.querySelector('.board-placement').style.display = 'flex';
     gameMode = 'computer';
     opponent = player2
     createPlayerGrid(player1);
@@ -31,6 +32,7 @@ document.querySelector('.vs').addEventListener('click', () => {
     player2 = new Player
     overlay.style.display = 'none';
     gameModeDisplay.style.display = 'none';
+    document.querySelector('.board-placement').style.display = 'flex';
     gameMode = 'vs';
     opponent = player2
 

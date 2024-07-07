@@ -40,12 +40,6 @@ button {
 }
 
 .game-mode {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 7px;
     position: fixed;
     z-index: 2;
     top: 30%;
@@ -59,6 +53,11 @@ button {
     width: 175px;
    
 }
+
+.game-mode button {
+    border: 2px solid gray;
+    margin-top: 5px;
+}
 .overlay {
     position: fixed;
     z-index: 1;
@@ -69,7 +68,7 @@ button {
 }
 
 .board-placement {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -117,7 +116,7 @@ button {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .squares {
