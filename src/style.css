@@ -76,14 +76,18 @@ button {
     gap: 15px;
 }
  
-
+.ships {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
 .ships  button {
-    background-color: transparent;
     width: fit-content;
     padding: 0px 7px;
 }
 .ships  button:focus {
-    background-color: rgb(197, 197, 197);
+    background-color: rgb(255, 255, 255);
 }
 
 .rotate {
@@ -113,6 +117,7 @@ button {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    margin-top: 15px;
 }
 
 .squares {
@@ -123,15 +128,15 @@ button {
 }
 
 .destroyer {
-    background-color: rgb(27, 27, 27);
+    background-color: rgb(104, 104, 104);
 }
 
 .patrol-boat {
-    background-color: rgb(128, 0, 0);
+    background-color: rgb(175, 0, 0);
 }
 
 .battleship {
-    background-color: rgb(184, 184, 184);
+    background-color: rgb(207, 207, 207);
 }
 
 .submarine {
@@ -160,4 +165,29 @@ background-color: rgb(166, 217, 252);
 
 #game-over {
     background-color: black;
+}
+
+@media only screen and (max-width: 1185px) {
+    .player1, .player2 {
+        display: none;
+    }
+
+    .toggle {
+        display: block;
+    }
+    .status-display {
+        position: fixed;
+        left: 50%;
+        top: 52%;
+        transform: translate(-50%, -50%);
+    }
+}
+@media only screen and (max-width: 435px) {
+    .squares {
+        width: 40px;
+        height: 40px;
+    }
+    .board {
+        width: 336px;
+    }
 }

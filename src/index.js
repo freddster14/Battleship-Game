@@ -13,6 +13,10 @@ const player1 = new Player;
 let player2;
 let gameMode = 'null';
 let opponent;
+let screenWidth  = 
+window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+(screenWidth < 1185) ? screenWidth = true : screenWidth = false;
 
 document.querySelector('.computer').addEventListener('click', () => {
     player2 = new Computer;
@@ -159,7 +163,7 @@ function returnShipLength(shipName) {
 
 
 function createBoardGrid(grid, t) {
-    gameContainer.style.display = 'flex';
+    gameContainer.style.display = 'flex'
     for(let i = 0; i < grid.length; i++){
         for(let n in grid[i]){
             let square = document.createElement('div');
@@ -184,6 +188,9 @@ function createBoardGrid(grid, t) {
             });
         }
     }
+    //Only displays opponent board
+    if(screenWidth) document.querySelector('.player2').classList.toggle('toggle');
+    screenWidth = false
 }
 
 function squareEvent(x, y, board){
@@ -245,7 +252,7 @@ function computerAttack(){
                 square = document.getElementsByClassName('board')[1].children[randomIndex];
             }
             square.click()
-        }, 1750)
+        }, 1900)
     }
 }
 
@@ -254,7 +261,7 @@ function styleUI(square, status) {
     if(status === 'hit') {
         square.classList.add('hit');
         square.classList.remove('hidden')
-        infoStatus.textContent = "You hit a ship! Attack again!"
+        infoStatus.textContent = "Attack again!"
     } else if(status === 'miss') {
         square.classList.add('miss')
         infoStatus.textContent = "Oh no, a miss!"
@@ -262,8 +269,10 @@ function styleUI(square, status) {
             (opponent === player1)
             ? turnDisplay.textContent = "Player 2:"
             : turnDisplay.textContent = "Player 1:";
-            infoStatus.textContent = "Attack!"
-        }, 1000)
+            infoStatus.textContent = "Attack!";
+            document.querySelector('.player1').classList.toggle('toggle');
+            document.querySelector('.player2').classList.toggle('toggle')
+        }, 900)
     }
 }
 function gameStatus(){
