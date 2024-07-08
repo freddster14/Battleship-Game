@@ -1,5 +1,5 @@
 # Battle Ship
-Live Preview: [Click Here]()
+Live Preview: [Click Here](https://freddster14.github.io/Battleship-Game/)
 ## Technologies Used
 
 * JavaScript
