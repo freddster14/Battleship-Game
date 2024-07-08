@@ -1,9 +1,12 @@
 import { player1, player2, opponent } from "./index";
-import audio from './hit-audio.wav';
+import hit from './hit-audio.wav';
+import miss from './miss-audio.mp3'
 
 const turnDisplay = document.querySelector('.player-turn');
 const infoStatus = document.querySelector('.info');
-const hitAudio = new Audio(audio);
+const hitAudio = new Audio(hit);
+const missAudio = new Audio(miss);
+missAudio.preload = 'auto';
 hitAudio.preload = 'auto';
 
 function styleUI(square, status) {
@@ -21,8 +24,13 @@ function styleUI(square, status) {
         //Remove shake
         setTimeout(() => {square.parentElement.classList.toggle('shake')}, 500)
     } else if(status === 'miss') {
-        square.classList.add('miss')
-        infoStatus.textContent = "Oh no, a miss!"
+        missAudio.currentTime = 0;
+        missAudio.play()
+        setTimeout(() => {
+            square.classList.add('miss')
+            infoStatus.textContent = "Oh no, a miss!"
+        }, 250)
+        
         setTimeout(() => {
             (opponent === player1)
             ? turnDisplay.textContent = "Player 2:"
@@ -30,7 +38,7 @@ function styleUI(square, status) {
             infoStatus.textContent = "Attack!";
             document.querySelector('.player1').classList.toggle('toggle');
             document.querySelector('.player2').classList.toggle('toggle')
-        }, 900)
+        }, 1050)
     }
 }
 function destroyBoard(board){
@@ -43,7 +51,6 @@ function destroyBoard(board){
             board.children[i].classList.remove('miss');
             hitAudio.currentTime = 1;
             hitAudio.play();
-            board.classList.toggle('toggle')
             if(i === xLeft){
                 xLeft += 9;
                 return board.children[i].style.backgroundColor = 'red'
@@ -60,16 +67,18 @@ function destroyBoard(board){
 }
 
 function gameOverDisplay(winner) {
-    if(winner.constructor.name === 'Computer'){
-        turnDisplay.textContent = "Computer:"
-        infoStatus.textContent = "Defeated all Player 1 ships!"
-    } else if(opponent === player2) {
-        turnDisplay.textContent = "Player 1:"
-        infoStatus.textContent = "Defeated all Player 2 ships!"
-    } else {
-        turnDisplay.textContent = "Player 2:"
-        infoStatus.textContent = "Defeated all Player 1 ships!"
-    }
+    setTimeout(() => {
+        if(winner.constructor.name === 'Computer'){
+            turnDisplay.textContent = "Computer:"
+            infoStatus.textContent = "Defeated all Player 1 ships!"
+        } else if(opponent === player2) {
+            turnDisplay.textContent = "Player 1:"
+            infoStatus.textContent = "Defeated all Player 2 ships!"
+        } else {
+            turnDisplay.textContent = "Player 2:"
+            infoStatus.textContent = "Defeated all Player 1 ships!"
+        }
+    },500) 
 }
 
 export {styleUI, destroyBoard, gameOverDisplay}

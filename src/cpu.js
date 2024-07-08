@@ -19,7 +19,7 @@ function computerAttack(){
                 square = document.getElementsByClassName('board')[1].children[randomIndex];
             }
             square.click()
-        }, 1900)
+        }, 2000)
     }
 }
 

@@ -3,11 +3,13 @@ import Ship from "./ship";
 import { styleUI, destroyBoard, gameOverDisplay } from "./styleUI";
 import { createCpuGrid, computerAttack } from "./cpu";
 import styles from './style.css'
+import backgroundAudio from './background-music.mp3'
 
 const overlay = document.querySelector('.overlay');
 const gameModeDisplay = document.querySelector('.game-mode');
 const gameContainer = document.querySelector('.board-container')
 const gameBoards = document.getElementsByClassName('board');
+const backgroundMusic = new Audio(backgroundAudio);
 const player1 = new Player;
 
 let player2;
@@ -23,6 +25,9 @@ window.innerWidth || document.documentElement.clientWidth || document.body.clien
 (screenWidth < 1185) ? screenWidth = true : screenWidth = false;
 //CPU button
 document.querySelector('.computer').addEventListener('click', () => {
+    backgroundMusic.loop = true;
+    backgroundMusic.load()
+    backgroundMusic.play()
     player2 = new Computer;
     overlay.style.display = 'none';
     gameModeDisplay.style.display = 'none';
@@ -33,6 +38,9 @@ document.querySelector('.computer').addEventListener('click', () => {
 });
 //VS Button
 document.querySelector('.vs').addEventListener('click', () => {
+    backgroundMusic.loop = true;
+    backgroundMusic.load()
+    backgroundMusic.play()
     player2 = new Player
     overlay.style.display = 'none';
     gameModeDisplay.style.display = 'none';
@@ -265,9 +273,11 @@ function gameStatus(){
     }
     //Style board and updates game display
     if(over && opponent === player2) {
+        backgroundMusic.pause()
         destroyBoard(gameBoards[2])
         gameOverDisplay(player1)
     } else if(opponent === player1 && over) {
+        backgroundMusic.pause()
         destroyBoard(gameBoards[1])
         gameOverDisplay(player2)
     }
