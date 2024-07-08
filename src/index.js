@@ -1,15 +1,15 @@
 import {Player, Computer} from "./player";
 import Ship from "./ship";
+import { styleUI, destroyBoard, gameOverDisplay } from "./styleUI";
+import { createCpuGrid, computerAttack } from "./cpu";
 import styles from './style.css'
 
 const overlay = document.querySelector('.overlay');
 const gameModeDisplay = document.querySelector('.game-mode');
 const gameContainer = document.querySelector('.board-container')
 const gameBoards = document.getElementsByClassName('board');
-const turnDisplay = document.querySelector('.player-turn');
-const infoStatus = document.querySelector('.info');
-
 const player1 = new Player;
+
 let player2;
 let gameMode = 'null';
 let opponent;
@@ -21,7 +21,7 @@ let screenWidth  =
 window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
 (screenWidth < 1185) ? screenWidth = true : screenWidth = false;
-
+//CPU button
 document.querySelector('.computer').addEventListener('click', () => {
     player2 = new Computer;
     overlay.style.display = 'none';
@@ -31,7 +31,7 @@ document.querySelector('.computer').addEventListener('click', () => {
     opponent = player2
     playerPlacementGrid(player1);
 });
-
+//VS Button
 document.querySelector('.vs').addEventListener('click', () => {
     player2 = new Player
     overlay.style.display = 'none';
@@ -41,19 +41,19 @@ document.querySelector('.vs').addEventListener('click', () => {
     opponent = player2
     playerPlacementGrid(player1)
 });
-
+//Ship buttons for placement
 document.querySelectorAll('.ships > button').forEach((button) => {
     button.addEventListener('click', (e) => {
         selectedShip = returnShipLength(e.target.classList.value)
     })
 });
+//Rotate Button
 document.querySelector('.rotate').addEventListener('click', () => {
-    if(rotate === false) {
-        rotate = true;
-    } else {
-        rotate = false
-    }
+    (rotate === false) ? rotate = true : rotate = false
 });
+
+gameBoards[0].addEventListener('click', (e) => {addShipsToBoard(e)});
+
 document.querySelector('.confirm').addEventListener('click', () => {
     let storage = {
         battleship: [],
@@ -92,28 +92,19 @@ document.querySelector('.confirm').addEventListener('click', () => {
         } else{
             createBoardGrid(player1.gameBoard.grid, 1);
             createBoardGrid(player2.gameBoard.grid, 2);
-            console.log("ran")
             document.querySelector('.board-placement').style.display = 'none'
         }
     }
 });
 
-function createCpuGrid(cpu) {
-    cpu.gameBoard.placeShip(new Ship('destroyer', 3), randomPlacement(3))
-    cpu.gameBoard.placeShip(new Ship('battleship', 4), randomPlacement(4))
-    cpu.gameBoard.placeShip(new Ship('submarine', 3), randomPlacement(3))
-    cpu.gameBoard.placeShip(new Ship('patrol-boat', 2), randomPlacement(2));
-    createBoardGrid(cpu.gameBoard.grid, 2)
-}
-
-
 function playerPlacementGrid(player) {
     playerPlacement = player;
-    let playerName = document.querySelector('.player-name');
+    const playerName = document.querySelector('.player-name');
     (player === player1) ? playerName.textContent = "Player 1" : playerName.textContent = "Player 2";
     for(let i = 0; i < player.gameBoard.grid.length; i++){
         for(let n in player.gameBoard.grid[i]){
-            let square = document.createElement('div');
+            const square = document.createElement('div');
+            //Remove player 1 board
             if(player === player2) gameBoards[0].children[0].remove();
             gameBoards[0].appendChild(square);
             gameBoards[0].style.gridTemplateColumns = `repeat(64, 1fr)`;
@@ -121,9 +112,6 @@ function playerPlacementGrid(player) {
             square.className = "squares";
             square.id = `${i},${n}`;
         }
-    }
-    if(player === player1) {
-        gameBoards[0].addEventListener('click', (e) => {addShipsToBoard(e)})
     }
 } 
 
@@ -138,9 +126,12 @@ function addShipsToBoard(e) {
     if(rotate & !((+current.id[0] + selectedShip[1]) > 8)) {
         //Goes through board's div vertically
         for(let i = 0; i < selectedShip[1]; i++){
+            //Remove ship due to a ship already there
             if(current.classList.length > 1) return removeShipPlacement(selectedShip[0])
+            //Display ship to grid
             current.classList.add(selectedShip[0]);
             if(i === selectedShip[1] - 1) break;
+            //Goes trough columns
             for(let n = 0; n <= 7; n++){
                 current = current.nextElementSibling;
             }
@@ -148,7 +139,9 @@ function addShipsToBoard(e) {
         usedShips.push(selectedShip[0])
      } else if(!rotate & !((+current.id[2] + selectedShip[1]) > 8)){
         for(let i = 0; i < selectedShip[1]; i++){
+            //Remove ship due to a ship already there
             if(current.classList.length > 1) return removeShipPlacement(selectedShip[0])
+            //Display ship to grid
             current.classList.add(selectedShip[0]);
             if(i === selectedShip[1] - 1) break;
             current = current.nextElementSibling;
@@ -182,29 +175,29 @@ function returnShipLength(shipName) {
 
 function createBoardGrid(grid, t) {
     gameContainer.style.display = 'flex';
-    console.log(grid)
     for(let i = 0; i < grid.length; i++){
         for(let n in grid[i]){
-            let square = document.createElement('div');
+            const square = document.createElement('div');
             gameBoards[t].appendChild(square);
             gameBoards[t].style.gridTemplateColumns = `repeat(64, 1fr)`;
             gameBoards[t].style.gridTemplateRows = `repeat(64, 1fr)`;
-            let boardBoolean = square.parentElement.classList.contains('1');
+            const boardBoolean = square.parentElement.classList.contains('1');
             square.className = "squares";
-            //Checks for Ship
-            if(grid[i][n] !== false) {
-                square.classList.add(`${grid[i][n].name}`)
-                if((gameMode === 'computer' && boardBoolean === false) || gameMode === 'vs') square.classList.add('hidden');
-            };
             square.id = `${i},${n}`
             square.addEventListener('click', (e) => {
                 let x = Number(square.id.at(0));
                 let y = Number(square.id.at(2));
-                let result = squareEvent(x, y, boardBoolean);
+                let result = attackSquare(x, y, boardBoolean);
                 styleUI(square, result);
                 changeTurn(result);
                 computerAttack();
             });
+            //Checks for Ship, to show or hide
+            if(grid[i][n] !== false) {
+                square.classList.add(`${grid[i][n].name}`)
+                if((gameMode === 'computer' && boardBoolean === false) || gameMode === 'vs')
+                 square.classList.add('hidden');
+            };
         }
     }
     //Only displays opponent board
@@ -212,7 +205,7 @@ function createBoardGrid(grid, t) {
     screenWidth = false
 }
 
-function squareEvent(x, y, board){
+function attackSquare(x, y, board){
     if(opponent === player1 && board === true) {
         return opponent.gameBoard.receiveAttack(x, y);
     } else if(board === false && opponent === player2){
@@ -241,6 +234,7 @@ function randomPlacement(shipLength) {
             coordinates.push([x, y += 1])
         }
         if(x === 8 || y === 8 || player2.gameBoard.grid[x][y] !== false){
+            //Restart, invalid position
             i = -1;
             coordinates = randomCoordinates();
             x = coordinates[0][0];
@@ -261,39 +255,6 @@ function randomCoordinates() {
     return [[x,y]]
 }
 
-function computerAttack(){
-    if(opponent === player1 && player2.constructor.name === "Computer"){
-        setTimeout(() => {
-            let randomIndex = Math.floor(Math.random() * 64);
-            let square = document.getElementsByClassName('board')[1].children[randomIndex];
-            while(square.classList.contains("hit") || square.classList.contains("miss")) {
-                randomIndex = Math.floor(Math.random() * 64);
-                square = document.getElementsByClassName('board')[1].children[randomIndex];
-            }
-            square.click()
-        }, 1900)
-    }
-}
-
-function styleUI(square, status) {
-    if(status === 'same spot') return
-    if(status === 'hit') {
-        square.classList.add('hit');
-        square.classList.remove('hidden')
-        infoStatus.textContent = "Attack again!"
-    } else if(status === 'miss') {
-        square.classList.add('miss')
-        infoStatus.textContent = "Oh no, a miss!"
-        setTimeout(() => {
-            (opponent === player1)
-            ? turnDisplay.textContent = "Player 2:"
-            : turnDisplay.textContent = "Player 1:";
-            infoStatus.textContent = "Attack!";
-            document.querySelector('.player1').classList.toggle('toggle');
-            document.querySelector('.player2').classList.toggle('toggle')
-        }, 900)
-    }
-}
 function gameStatus(){
     let over = null;
     //Checks for game over
@@ -312,35 +273,4 @@ function gameStatus(){
     }
 }
 
-function destroyBoard(board){
-    let i = 0;
-    let xLeft = 0;
-    let xRight = 7;
-    let interval = setInterval(() => {
-        board.children[i].classList.remove('hit');
-        board.children[i].classList.remove('miss');
-        if(i === xLeft){
-            xLeft += 9;
-            return board.children[i].style.backgroundColor = 'red'
-        } else if(i === xRight) {
-            xRight += 7;
-            return board.children[i].style.backgroundColor = 'red'
-        }
-        board.children[i].id = 'game-over';
-        i++;
-        if(i === 64) clearInterval(interval)
-    }, 20);
-}
-
-function gameOverDisplay(winner) {
-    if(winner.constructor.name === 'Computer'){
-        turnDisplay.textContent = "Computer:"
-        infoStatus.textContent = "Defeated all Player 1 ships!"
-    } else if(opponent === player2) {
-        turnDisplay.textContent = "Player 1:"
-        infoStatus.textContent = "Defeated all Player 2 ships!"
-    } else {
-        turnDisplay.textContent = "Player 2:"
-        infoStatus.textContent = "Defeated all Player 1 ships!"
-    }
-}
+export {createBoardGrid, randomPlacement, player1, player2, opponent}
