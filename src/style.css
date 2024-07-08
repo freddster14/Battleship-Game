@@ -188,6 +188,10 @@ background-color: rgb(166, 217, 252);
     background-color: black;
 }
 
+.shake {
+    animation: shake 0.25s infinite;
+}
+
 @media only screen and (max-width: 1185px) {
     .player1, .player2 {
         display: none;
