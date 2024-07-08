@@ -78,6 +78,10 @@ button {
     justify-content: center;
     gap: 15px;
 }
+
+.player-name {
+    margin: -10px 0px;
+}
  
 .ships {
     display: flex;
@@ -206,5 +210,8 @@ background-color: rgb(166, 217, 252);
     }
     .board {
         width: 336px;
+    }
+    .status-display {
+        top: 515px;
     }
 }
