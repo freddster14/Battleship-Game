@@ -89,7 +89,7 @@ button {
     gap: 10px;
     justify-content: center;
 }
-.ships  button, .confirm {
+.ships  button, .confirm, .randomize {
     width: fit-content;
     padding: 0px 7px;
     border: 2px solid gray;
@@ -104,7 +104,7 @@ button {
     gap: 15px;
 }
 
-.confirm{
+.confirm, .randomize{
     background-color: transparent;
 }
 

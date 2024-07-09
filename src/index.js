@@ -17,6 +17,7 @@ let gameMode = 'null';
 let opponent;
 let selectedShip = [];
 let rotate = false;
+let randomize = false;
 let usedShips = [];
 let playerPlacement = player1;
 let screenWidth  = 
@@ -60,7 +61,23 @@ document.querySelector('.rotate').addEventListener('click', () => {
     (rotate === false) ? rotate = true : rotate = false
 });
 
-gameBoards[0].addEventListener('click', (e) => {addShipsToBoard(e)});
+document.querySelector('.randomize').addEventListener('click', () => {
+    randomize = true
+    for(let i = 0; i < 4; i++) {
+        let random = Math.round(Math.random() * 63);
+        let rotate = Math.round(Math.random())
+        let ship = document.querySelector('.ships').children[i];
+        ship.click()
+        if(rotate === 1) document.querySelector('.rotate').click()
+        gameBoards[0].children[random].click();
+        if(!gameBoards[0].children[random].classList.contains(ship.className)){
+            i--;
+        }
+    }
+    randomize = false
+})
+
+gameBoards[0].addEventListener('click', (e) => {placeShip(e)});
 
 document.querySelector('.confirm').addEventListener('click', () => {
     let storage = {
@@ -123,7 +140,7 @@ function playerPlacementGrid(player) {
     }
 } 
 
-function addShipsToBoard(e) {
+function placeShip(e) {
     if(selectedShip === null) return;
     let current = e.target;
     //Removes same ship to re insert
@@ -155,6 +172,11 @@ function addShipsToBoard(e) {
             current = current.nextElementSibling;
         }
         usedShips.push(selectedShip[0])
+     }
+     //Shakes board if invalid placement
+     if(!usedShips.includes(selectedShip[0]) && randomize === false) {
+        gameBoards[0].classList.toggle('shake')
+        setTimeout(() => {gameBoards[0].classList.toggle('shake')}, 250)
      }
 }
 
@@ -230,7 +252,7 @@ function changeTurn(result) {
     }
 }
 
-function randomPlacement(shipLength) {
+function randomCpuPlacement(shipLength) {
     let coordinates = randomCoordinates()
     let x = coordinates[0][0];
     let y = coordinates[0][1];
@@ -283,4 +305,4 @@ function gameStatus(){
     }
 }
 
-export {createBoardGrid, randomPlacement, player1, player2, opponent}
+export {createBoardGrid, randomCpuPlacement, player1, player2, opponent}

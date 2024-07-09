@@ -1,11 +1,11 @@
-import {createBoardGrid, randomPlacement, player1, player2, opponent} from './index';
+import {createBoardGrid, randomCpuPlacement, player1, player2, opponent} from './index';
 import Ship from './ship';
 
 function createCpuGrid(cpu) {
-    cpu.gameBoard.placeShip(new Ship('destroyer', 3), randomPlacement(3))
-    cpu.gameBoard.placeShip(new Ship('battleship', 4), randomPlacement(4))
-    cpu.gameBoard.placeShip(new Ship('submarine', 3), randomPlacement(3))
-    cpu.gameBoard.placeShip(new Ship('patrol-boat', 2), randomPlacement(2));
+    cpu.gameBoard.placeShip(new Ship('destroyer', 3), randomCpuPlacement(3, 2))
+    cpu.gameBoard.placeShip(new Ship('battleship', 4), randomCpuPlacement(4, 2))
+    cpu.gameBoard.placeShip(new Ship('submarine', 3), randomCpuPlacement(3, 2))
+    cpu.gameBoard.placeShip(new Ship('patrol-boat', 2), randomCpuPlacement(2, 2));
     createBoardGrid(cpu.gameBoard.grid, 2)
 }
 
