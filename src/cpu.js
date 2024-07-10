@@ -17,6 +17,8 @@ function computerAttack(difficult){
         easyAttack()
        } else if(difficult === 'medium' && !attackAgain) {
         mediumAttack()
+       } else if(difficult === 'hard' && !attackAgain) {
+        hardAttack()
        }
     }
 }
@@ -30,7 +32,6 @@ function easyAttack() {
         square = document.getElementsByClassName('board')[1].children[randomIndex];
     }
     setTimeout(() => {
-        console.log(square)
         square.click()
     }, 2000)
     
@@ -51,27 +52,8 @@ function mediumAttack() {
     let object = player1.gameBoard.grid[x][y];
     if(object !== false) {
         attackAgain = true
-        let z;
-        let w;
-        for(let i = 0; i < 4; i++) {
-            z = x;
-            w = y;
-            //Check adjacent square to find ship
-            if(i === 0){
-                index = square.nextSibling;
-            } else if(i === 1) {
-                index = square.previousSibling;
-            } else if(i === 2) {
-                index = square.parentElement.children[((z -= 1) * 8) + w]
-            } else {
-                index = square.parentElement.children[((z += 1) * 8) + w]
-            }
-            //No valid square to attack again
-            if(index === undefined || index === null) {
-                return attackAgain = false;
-            }
-            if(index.classList.contains(object.name) && !index.classList.contains('hit')) break;
-        }
+        index = findAdjacentShip(x, y, square)[0]
+        if(index === undefined) return;
         //4s because the first attack also has Timeout
         setTimeout(() => {
             index.click()
@@ -79,6 +61,84 @@ function mediumAttack() {
             computerAttack('medium')
         }, 4000); 
     }
+}
+
+
+function hardAttack() {
+    let square;
+    let index;
+    //Attack random until hit
+    if(!attackAgain) square = easyAttack();
+    
+    let x = +square.id[0];
+    let y = +square.id[2];
+    //Ship === 'hit'
+    let object = player1.gameBoard.grid[x][y];
+    if(object !== false) {
+        let storage = [];
+        attackAgain = true;
+        index = findAdjacentShip(x, y, square);
+        if(index === undefined) return;
+        for(let n in index) {
+            storage.push(index[n])
+        }
+        let i = 0;
+        while(storage.length !== object.length - 1) {
+                index = findAdjacentShip(storage[i].id[0], storage[i].id[2], storage[i]);
+                for(let n in index) {
+                    //Push new ship placement
+                    if(!storage.includes(index[n]) && square.id !== index[n].id) {
+                        storage.push(index[n]);
+                    }
+                }
+            i++;
+        }
+        setTimeout(() => {
+            for(let n in storage){
+                let i = 1;
+                i += +n;
+                i *= 2000;
+                setTimeout(() => {
+                    storage[n].click();
+                    if(object.isSunk()) {
+                        attackAgain = false;
+                        computerAttack('hard')
+                    }
+                }, i)
+                
+            }  
+        }, 2000)
+        
+            
+    }
+}
+
+function findAdjacentShip(x, y, square) {
+    let z;
+    let w; 
+    let index;
+    let storage = []
+    for(let i = 0; i < 4; i++) {
+        z = +x;
+        w = +y;
+        //Check adjacent square to find ship
+        if(i === 0){
+            index = square.nextSibling;
+        } else if(i === 1) {
+            index = square.previousSibling;
+        } else if(i === 2) {
+            index = square.parentElement.children[((z -= 1) * 8) + w]
+        } else {
+            index = square.parentElement.children[((z += 1) * 8) + w]
+        }
+        //No valid square to attack again
+        if(index === null || index === undefined) continue;
+        if(index.classList.contains(square.classList[1]) && !index.classList.contains('hit')){
+            storage.push(index)
+        }
+    }
+    if(storage === []) return undefined
+    return storage;
 }
 
 

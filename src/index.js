@@ -232,6 +232,7 @@ function createGameGrid(grid, t) {
             square.className = "squares";
             square.id = `${i},${n}`
             square.addEventListener('click', (e) => {
+                if(!checkTurn(boardBoolean)) return
                 let x = Number(square.id.at(0));
                 let y = Number(square.id.at(2));
                 let result = attackSquare(x, y, boardBoolean);
@@ -258,6 +259,14 @@ function attackSquare(x, y, board){
     } else if(board === false && opponent === player2){
         return opponent.gameBoard.receiveAttack(x, y);
     }
+}
+
+
+function checkTurn(board) {
+    if((opponent === player1 && board === true) || (board === false && opponent === player2)) {
+        return true
+    }
+    return false
 }
 
 function changeTurn(result) {
