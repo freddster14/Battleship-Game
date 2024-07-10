@@ -15,6 +15,7 @@ const player1 = new Player;
 let player2;
 let gameMode = 'null';
 let opponent;
+let difficult = null;
 let selectedShip = [];
 let rotate = false;
 let randomize = false;
@@ -30,12 +31,20 @@ document.querySelector('.computer').addEventListener('click', () => {
     backgroundMusic.load()
     backgroundMusic.play()
     player2 = new Computer;
-    overlay.style.display = 'none';
-    gameModeDisplay.style.display = 'none';
-    document.querySelector('.board-placement').style.display = 'flex';
     gameMode = 'computer';
     opponent = player2
-    playerPlacementGrid(player1);
+    //Difficulty buttons
+    document.querySelectorAll('.difficult > button').forEach((button) => {
+        document.querySelector('.mode-container').style.display = 'none'
+        document.querySelector('.difficult').style.display = 'block'
+        button.addEventListener('click', (e) => {
+            document.querySelector('.board-placement').style.display = 'flex';
+            overlay.style.display = 'none';
+            gameModeDisplay.style.display = 'none';
+            difficult = e.target.className
+            createPlacementGrid(player1);
+        })
+    })
 });
 //VS Button
 document.querySelector('.vs').addEventListener('click', () => {
@@ -48,8 +57,12 @@ document.querySelector('.vs').addEventListener('click', () => {
     document.querySelector('.board-placement').style.display = 'flex';
     gameMode = 'vs';
     opponent = player2
-    playerPlacementGrid(player1)
+    createPlacementGrid(player1)
 });
+
+
+
+
 //Ship buttons for placement
 document.querySelectorAll('.ships > button').forEach((button) => {
     button.addEventListener('click', (e) => {
@@ -66,10 +79,13 @@ document.querySelector('.randomize').addEventListener('click', () => {
     for(let i = 0; i < 4; i++) {
         let random = Math.round(Math.random() * 63);
         let rotate = Math.round(Math.random())
+        //Selects ship
         let ship = document.querySelector('.ships').children[i];
         ship.click()
         if(rotate === 1) document.querySelector('.rotate').click()
+        //Attempt to place ship
         gameBoards[0].children[random].click();
+        //If ship did not place re run loop
         if(!gameBoards[0].children[random].classList.contains(ship.className)){
             i--;
         }
@@ -77,7 +93,6 @@ document.querySelector('.randomize').addEventListener('click', () => {
     randomize = false
 })
 
-gameBoards[0].addEventListener('click', (e) => {placeShip(e)});
 
 document.querySelector('.confirm').addEventListener('click', () => {
     let storage = {
@@ -108,21 +123,23 @@ document.querySelector('.confirm').addEventListener('click', () => {
         playerPlacement.gameBoard.placeShip(new Ship(n, returnShipLength(n)[1]), storage[n])
     }
     if(gameMode === 'computer') {
-        createBoardGrid(player1.gameBoard.grid, 1)
+        createGameGrid(player1.gameBoard.grid, 1)
         createCpuGrid(player2);
         document.querySelector('.board-placement').style.display = 'none'
     } else if (gameMode === 'vs') {
         if(playerPlacement === player1) {
-            playerPlacementGrid(player2)
+            createPlacementGrid(player2)
         } else{
-            createBoardGrid(player1.gameBoard.grid, 1);
-            createBoardGrid(player2.gameBoard.grid, 2);
+            createGameGrid(player1.gameBoard.grid, 1);
+            createGameGrid(player2.gameBoard.grid, 2);
             document.querySelector('.board-placement').style.display = 'none'
         }
     }
 });
 
-function playerPlacementGrid(player) {
+gameBoards[0].addEventListener('click', (e) => {placeShip(e)});
+
+function createPlacementGrid(player) {
     playerPlacement = player;
     const playerName = document.querySelector('.player-name');
     (player === player1) ? playerName.textContent = "Player 1" : playerName.textContent = "Player 2";
@@ -203,7 +220,7 @@ function returnShipLength(shipName) {
 }
 
 
-function createBoardGrid(grid, t) {
+function createGameGrid(grid, t) {
     gameContainer.style.display = 'flex';
     for(let i = 0; i < grid.length; i++){
         for(let n in grid[i]){
@@ -220,7 +237,7 @@ function createBoardGrid(grid, t) {
                 let result = attackSquare(x, y, boardBoolean);
                 styleUI(square, result);
                 changeTurn(result);
-                computerAttack();
+                computerAttack(difficult);
             });
             //Checks for Ship, to show or hide
             if(grid[i][n] !== false) {
@@ -252,38 +269,7 @@ function changeTurn(result) {
     }
 }
 
-function randomCpuPlacement(shipLength) {
-    let coordinates = randomCoordinates()
-    let x = coordinates[0][0];
-    let y = coordinates[0][1];
-    let vertical = Math.round(Math.random() * 1);
-    for(let i = 0; i < shipLength - 1; i++){
-        if(vertical){
-            coordinates.push([x += 1, y])
-        } else {
-            coordinates.push([x, y += 1])
-        }
-        if(x === 8 || y === 8 || player2.gameBoard.grid[x][y] !== false){
-            //Restart, invalid position
-            i = -1;
-            coordinates = randomCoordinates();
-            x = coordinates[0][0];
-            y = coordinates[0][1];
-            continue;
-        }
-    }
-    return coordinates 
-}
 
-function randomCoordinates() {
-    let x = Math.floor(Math.random() * 8);
-    let y = Math.floor(Math.random() * 8);
-    while(player2.gameBoard.grid[x][y] !== false) {
-        x = Math.floor(Math.random() * 8);
-        y = Math.floor(Math.random() * 8);
-    }
-    return [[x,y]]
-}
 
 function gameStatus(){
     let over = null;
@@ -305,4 +291,4 @@ function gameStatus(){
     }
 }
 
-export {createBoardGrid, randomCpuPlacement, player1, player2, opponent}
+export {createGameGrid, player1, player2, opponent}
