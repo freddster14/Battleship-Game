@@ -6,6 +6,9 @@ const turnDisplay = document.querySelector('.player-turn');
 const infoStatus = document.querySelector('.info');
 const hitAudio = new Audio(hit);
 const missAudio = new Audio(miss);
+
+let previousDiv = null;
+
 missAudio.preload = 'auto';
 hitAudio.preload = 'auto';
 
@@ -28,9 +31,13 @@ function styleUI(square, status) {
         missAudio.play()
         setTimeout(() => {
             square.classList.add('miss')
-            infoStatus.textContent = "Oh no, a miss!"
+            infoStatus.textContent = "Oh no, a miss!";
+            if(previousDiv !== null) {
+                previousDiv.classList.toggle('prev-miss')
+                console.log(previousDiv)
+            }
+            previousDiv = square;
         }, 250)
-        
         setTimeout(() => {
             (opponent === player1)
             ? turnDisplay.textContent = "Player 2:"

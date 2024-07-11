@@ -178,6 +178,10 @@ button {
     background-size: 100%;
 }
 
+.prev-miss {
+    background-image: url(/src/prev-miss.png);
+}
+
 .hidden {
 background-color: rgb(166, 217, 252);
 
