@@ -3,8 +3,9 @@ import { destroyBoard, gameOverDisplay, styleUI } from "./styleUI";
 
 const gameBoards = document.getElementsByClassName('board');
 let opponent;
-let screenWidth  = window.innerWidth || document.documentElement.clientWidth 
-                   || document.body.clientWidth;
+let screenWidth  = 
+window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
 (screenWidth < 1185) ? screenWidth = true : screenWidth = false;
         
 
@@ -110,6 +111,9 @@ export default class GameBoard {
                     if((player2.constructor.name === 'Computer' && boardBoolean === false) || player2.constructor.name === 'Player')
                      square.classList.add('hidden');
                 };
+                if(player2.constructor.name === 'Computer' && t === 1) {
+                    gameBoards[t].classList.add('board-cover')
+                }
             }
         }
         //Only displays opponent board;

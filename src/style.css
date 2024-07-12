@@ -146,6 +146,13 @@ button {
     align-items: center;
     margin-top: 10px;
 }
+.board-cover::after {
+    content: '';
+    width: 420px;
+    height: 420px;
+    position: absolute;
+    z-index: 1;
+}
 
 .squares {
     border: 1px solid rgb(58, 58, 58);
