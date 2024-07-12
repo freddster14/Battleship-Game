@@ -1,4 +1,5 @@
-import { player1, player2, opponent } from "./index";
+import { player1, player2} from "./index";
+import { opponent } from "./game-board";
 import hit from './hit-audio.wav';
 import miss from './miss-audio.mp3'
 
@@ -34,7 +35,6 @@ function styleUI(square, status) {
             infoStatus.textContent = "Oh no, a miss!";
             if(previousDiv !== null) {
                 previousDiv.classList.toggle('prev-miss')
-                console.log(previousDiv)
             }
             previousDiv = square;
         }, 250)

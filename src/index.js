@@ -1,38 +1,29 @@
-import {Player, Computer} from "./player";
+import { Player } from "./player";
 import Ship from "./ship";
-import { styleUI, destroyBoard, gameOverDisplay } from "./styleUI";
-import { createCpuGrid, computerAttack } from "./cpu";
+import { Computer } from "./computer";
 import styles from './style.css'
 import backgroundAudio from './background-music.mp3'
 
 const overlay = document.querySelector('.overlay');
 const gameModeDisplay = document.querySelector('.game-mode');
-const gameContainer = document.querySelector('.board-container')
 const gameBoards = document.getElementsByClassName('board');
 const backgroundMusic = new Audio(backgroundAudio);
 const player1 = new Player;
 
 let player2;
-let gameMode = 'null';
-let opponent;
 let difficult = null;
 let selectedShip = [];
 let rotate = false;
 let randomize = false;
 let usedShips = [];
 let playerPlacement = player1;
-let screenWidth  = 
-window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
-(screenWidth < 1185) ? screenWidth = true : screenWidth = false;
 //CPU button
 document.querySelector('.computer').addEventListener('click', () => {
     backgroundMusic.loop = true;
     backgroundMusic.load()
     backgroundMusic.play()
     player2 = new Computer;
-    gameMode = 'computer';
-    opponent = player2
     //Difficulty buttons
     document.querySelectorAll('.difficult > button').forEach((button) => {
         document.querySelector('.mode-container').style.display = 'none'
@@ -55,8 +46,6 @@ document.querySelector('.vs').addEventListener('click', () => {
     overlay.style.display = 'none';
     gameModeDisplay.style.display = 'none';
     document.querySelector('.board-placement').style.display = 'flex';
-    gameMode = 'vs';
-    opponent = player2
     createPlacementGrid(player1)
 });
 
@@ -122,16 +111,16 @@ document.querySelector('.confirm').addEventListener('click', () => {
     for(let n in storage){
         playerPlacement.gameBoard.placeShip(new Ship(n, returnShipLength(n)[1]), storage[n])
     }
-    if(gameMode === 'computer') {
-        createGameGrid(player1.gameBoard.grid, 1)
-        createCpuGrid(player2);
+    if(player2.constructor.name === 'Computer') {
+        player1.gameBoard.createGameGrid(player1.gameBoard.grid, 1)
+        player2.createCpuGrid(player2);
         document.querySelector('.board-placement').style.display = 'none'
-    } else if (gameMode === 'vs') {
+    } else if (player2.constructor.name === 'Player') {
         if(playerPlacement === player1) {
             createPlacementGrid(player2)
         } else{
-            createGameGrid(player1.gameBoard.grid, 1);
-            createGameGrid(player2.gameBoard.grid, 2);
+            player1.gameBoard.createGameGrid(player1.gameBoard.grid, 1);
+            player2.gameBoard.createGameGrid(player2.gameBoard.grid, 2);
             document.querySelector('.board-placement').style.display = 'none'
         }
     }
@@ -220,84 +209,6 @@ function returnShipLength(shipName) {
 }
 
 
-function createGameGrid(grid, t) {
-    gameContainer.style.display = 'flex';
-    for(let i = 0; i < grid.length; i++){
-        for(let n in grid[i]){
-            const square = document.createElement('div');
-            gameBoards[t].appendChild(square);
-            gameBoards[t].style.gridTemplateColumns = `repeat(64, 1fr)`;
-            gameBoards[t].style.gridTemplateRows = `repeat(64, 1fr)`;
-            const boardBoolean = square.parentElement.classList.contains('1');
-            square.className = "squares";
-            square.id = `${i},${n}`
-            square.addEventListener('click', (e) => {
-                if(!checkTurn(boardBoolean)) return
-                let x = Number(square.id.at(0));
-                let y = Number(square.id.at(2));
-                let result = attackSquare(x, y, boardBoolean);
-                styleUI(square, result);
-                changeTurn(result);
-                computerAttack(difficult);
-            });
-            //Checks for Ship, to show or hide
-            if(grid[i][n] !== false) {
-                square.classList.add(`${grid[i][n].name}`)
-                if((gameMode === 'computer' && boardBoolean === false) || gameMode === 'vs')
-                 square.classList.add('hidden');
-            };
-        }
-    }
-    //Only displays opponent board
-    if(screenWidth) document.querySelector('.player2').classList.toggle('toggle');
-    screenWidth = false
-}
-
-function attackSquare(x, y, board){
-    if(opponent === player1 && board === true) {
-        return opponent.gameBoard.receiveAttack(x, y);
-    } else if(board === false && opponent === player2){
-        return opponent.gameBoard.receiveAttack(x, y);
-    }
-}
 
 
-function checkTurn(board) {
-    if((opponent === player1 && board === true) || (board === false && opponent === player2)) {
-        return true
-    }
-    return false
-}
-
-function changeTurn(result) {
-    if(result === 'same spot') return
-    if(result === 'hit') {
-        return gameStatus()
-    } else if(result === 'miss') {
-        (opponent === player1) ? opponent = player2 : opponent = player1;
-    }
-}
-
-
-
-function gameStatus(){
-    let over = null;
-    //Checks for game over
-    if(opponent === player2){
-        over = player2.gameBoard.isAllSunk()
-    } else {
-        over = player1.gameBoard.isAllSunk()
-    }
-    //Style board and updates game display
-    if(over && opponent === player2) {
-        backgroundMusic.pause()
-        destroyBoard(gameBoards[2])
-        gameOverDisplay(player1)
-    } else if(opponent === player1 && over) {
-        backgroundMusic.pause()
-        destroyBoard(gameBoards[1])
-        gameOverDisplay(player2)
-    }
-}
-
-export {createGameGrid, player1, player2, opponent}
+export { player1, player2, difficult}

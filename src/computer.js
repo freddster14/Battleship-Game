@@ -1,25 +1,31 @@
-import {createGameGrid, player1, player2, opponent} from './index';
+import { player1, player2} from './index';
+import GameBoard from './game-board';
 import Ship from './ship';
+import {opponent} from './game-board'
 
 let attackAgain = false;
 
-function createCpuGrid(cpu) {
-    cpu.gameBoard.placeShip(new Ship('destroyer', 3), randomCpuPlacement(3, 2))
-    cpu.gameBoard.placeShip(new Ship('battleship', 4), randomCpuPlacement(4, 2))
-    cpu.gameBoard.placeShip(new Ship('submarine', 3), randomCpuPlacement(3, 2))
-    cpu.gameBoard.placeShip(new Ship('patrol-boat', 2), randomCpuPlacement(2, 2));
-    createGameGrid(cpu.gameBoard.grid, 2)
-}
-
-function computerAttack(difficult){
-    if(opponent === player1 && player2.constructor.name === "Computer"){
-       if(difficult === 'easy'){
-        easyAttack()
-       } else if(difficult === 'medium' && !attackAgain) {
-        mediumAttack()
-       } else if(difficult === 'hard' && !attackAgain) {
-        hardAttack()
-       }
+class Computer {
+    constructor(){
+        this.gameBoard = new GameBoard;
+    }
+    createCpuGrid(cpu) {
+        cpu.gameBoard.placeShip(new Ship('destroyer', 3), randomCpuPlacement(3, 2))
+        cpu.gameBoard.placeShip(new Ship('battleship', 4), randomCpuPlacement(4, 2))
+        cpu.gameBoard.placeShip(new Ship('submarine', 3), randomCpuPlacement(3, 2))
+        cpu.gameBoard.placeShip(new Ship('patrol-boat', 2), randomCpuPlacement(2, 2));
+        cpu.gameBoard.createGameGrid(cpu.gameBoard.grid, 2)
+    }
+    computerAttack(difficult){
+        if(opponent === player1){
+           if(difficult === 'easy'){
+            easyAttack()
+           } else if(difficult === 'medium' && !attackAgain) {
+            mediumAttack()
+           } else if(difficult === 'hard' && !attackAgain) {
+            hardAttack()
+           }
+        }
     }
 }
 
@@ -42,10 +48,8 @@ function mediumAttack() {
     let square;
     let index;
     //Attack random until hit
-    if(!attackAgain) {
-        square = easyAttack();
-        index = square
-    }
+    if(!attackAgain) square = easyAttack();
+
     let x = +square.id[0];
     let y = +square.id[2];
     //Ship === 'hit'
@@ -58,7 +62,7 @@ function mediumAttack() {
         setTimeout(() => {
             index.click()
             attackAgain = false;
-            computerAttack('medium')
+            player2.computerAttack('medium')
         }, 4000); 
     }
 }
@@ -79,9 +83,7 @@ function hardAttack() {
         attackAgain = true;
         index = findAdjacentShip(x, y, square);
         if(index === undefined) return;
-        for(let n in index) {
-            storage.push(index[n])
-        }
+        for(let n in index) {storage.push(index[n])}
         let i = 0;
         while(storage.length !== object.length - 1) {
                 index = findAdjacentShip(storage[i].id[0], storage[i].id[2], storage[i]);
@@ -97,19 +99,16 @@ function hardAttack() {
             for(let n in storage){
                 let i = 1;
                 i += +n;
-                i *= 2000;
+                i *= 1800;
                 setTimeout(() => {
                     storage[n].click();
                     if(object.isSunk()) {
                         attackAgain = false;
-                        computerAttack('hard')
+                        player2.computerAttack('hard')
                     }
                 }, i)
-                
             }  
-        }, 2000)
-        
-            
+        }, 2000)   
     }
 }
 
@@ -175,4 +174,4 @@ function randomCoordinates() {
     return [[x,y]]
 }
 
-export {createCpuGrid, computerAttack}
+export {Computer}
