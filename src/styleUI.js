@@ -56,6 +56,7 @@ function destroyBoard(board){
         let interval = setInterval(() => {
             board.children[i].classList.remove('hit');
             board.children[i].classList.remove('miss');
+            board.children[i].classList.remove('prev-miss')
             hitAudio.currentTime = 1;
             hitAudio.play();
             if(i === xLeft){
